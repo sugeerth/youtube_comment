@@ -14,12 +14,12 @@ The YouTube Comment Ingester is a simple Chrome extension that automates the pro
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/youtube-comment-ingester.git```
-1. ** Open Chrome and navigate to the Extensions page:
+   git clone https://github.com/yourusername/youtube-comment-ingester.git
+2. ** Open Chrome and navigate to the Extensions page:
 
-```
+
 Copy code
 chrome://extensions/
-Enable Developer Mode by clicking the toggle switch in the top right corner.```
+Enable Developer Mode by clicking the toggle switch in the top right corner.
 
 Click the "Load unpacked" button and select the cloned repository folder.
