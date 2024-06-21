@@ -10,6 +10,8 @@ The YouTube Comment Ingester is a simple Chrome extension that automates the pro
 - Extract comments from the video
 - Save extracted comments in a JSON format
 
+<a href="https://ibb.co/0Vs3cd6"><img src="https://i.ibb.co/k6mFxWw/Screenshot-2024-06-20-at-8-13-53-PM.png" alt="Screenshot-2024-06-20-at-8-13-53-PM" border="0"></a>
+
 ## Installation
 
 1. **Clone the repository:**
