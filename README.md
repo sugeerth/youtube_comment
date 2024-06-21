@@ -15,15 +15,11 @@ The YouTube Comment Ingester is a simple Chrome extension that automates the pro
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/yourusername/youtube-comment-ingester.git
-2. ** Open Chrome and navigate to the Extensions page:
+2. Open Chrome and navigate to the Extensions page at chrome://extensions/
 
+3. Enable Developer Mode by clicking the toggle switch in the top right corner.
 
-Copy code
-## chrome://extensions/
-
-## Enable Developer Mode by clicking the toggle switch in the top right corner.
-
-## Click the "Load unpacked" button and select the cloned repository folder.
+4. Click the "Load unpacked" button and select the cloned repository folder.
 
 Using word clouds for YouTube videos, specifically for analyzing the comments section, can provide valuable insights in several ways:
 
