@@ -113,7 +113,8 @@ const Comments = (() => {
       list: wordFreq,
       gridSize: Math.round(10 * (window.innerWidth / 1024)), // Adjusted gridSize for compactness
       weightFactor: function (size) {
-        return (size / maxCount) * 95; // Adjust weightFactor for compactness
+        // return (size / maxCount) * 95; // Adjust weightFactor for compactness
+        return Math.log(size + 1) * 20; // Adjust weightFactor to ensure better visibility for frequent words
       },
       fontFamily: 'Arial',
       color: 'random-dark',
