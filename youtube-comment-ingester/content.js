@@ -30,33 +30,41 @@ const Utils = (() => {
 const Comments = (() => {
   const extractComments = () => {
     const commentElements = document.querySelectorAll('#contents #content-text');
-    return Array.from(commentElements).map(commentElement => {
-      const commentBody = commentElement.closest('#comment');
-      return {
-        text: commentElement.textContent.trim().replace(/\n/g, ' ').replace(/"/g, '""').replace(/'/g, "''"),
-        author: commentBody.querySelector('#author-text').textContent.trim().replace(/"/g, '""').replace(/'/g, "''"),
-        likes: commentBody.querySelector('#vote-count-middle').textContent.trim().replace(/"/g, '""').replace(/'/g, "''")
-      };
+    return Array.from(commentElements).map(commentElement => commentElement.textContent.trim().replace(/\n/g, ' '));
+  };
+
+  const generateWordFrequency = comments => {
+    const wordCount = {};
+    comments.forEach(comment => {
+      const words = comment.split(/\s+/);
+      words.forEach(word => {
+        word = word.toLowerCase();
+        wordCount[word] = (wordCount[word] || 0) + 1;
+      });
     });
+    return Object.entries(wordCount).map(([word, count]) => [word, count]).sort((a, b) => b[1] - a[1]);
   };
 
-  const sortComments = comments => comments.sort((a, b) => Utils.getSortableLikes(b.likes) - Utils.getSortableLikes(a.likes));
+  const displayWordCloud = wordFreq => {
+    const wordCloudDiv = document.createElement('div');
+    wordCloudDiv.id = 'wordCloud';
+    wordCloudDiv.style.width = '100%';
+    wordCloudDiv.style.height = '400px';
+    const commentsSection = document.querySelector('ytd-comments');
+    commentsSection.parentNode.insertBefore(wordCloudDiv, commentsSection);
 
-  const convertToCSV = comments => {
-    const headers = ['Text', 'Author', 'Likes'];
-    const rows = comments.map(comment => [comment.text, comment.author, comment.likes]);
-    return [headers, ...rows].map(row => row.map(value => `"${value}"`).join(',')).join('\n');
+    const wordCloudOptions = {
+      list: wordFreq,
+      gridSize: 1,
+      weightFactor: 1,
+      fontFamily: 'Arial',
+      color: 'random-dark',
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    };
+    WordCloud(wordCloudDiv, wordCloudOptions);
   };
 
-  const downloadCSV = (csv, fileName) => {
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.download = `${fileName}.csv`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-  };
-
-  return { extractComments, sortComments, convertToCSV, downloadCSV };
+  return { extractComments, generateWordFrequency, displayWordCloud };
 })();
 
 // UI Functions
@@ -114,9 +122,8 @@ const Main = (() => {
 
     await Utils.scrollToBottom();
     const comments = Comments.extractComments();
-    const sortedComments = Comments.sortComments(comments);
-    const csv = Comments.convertToCSV(sortedComments);
-    Comments.downloadCSV(csv, `${videoTitle} [${videoId}]`);
+    const wordFreq = Comments.generateWordFrequency(comments);
+    Comments.displayWordCloud(wordFreq);
 
     button.innerText = '🔃';
     button.title = 'Crawl again';
