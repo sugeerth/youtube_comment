@@ -91,11 +91,11 @@ const Comments = (() => {
     console.log('%c🧑‍💻 YT Comments Crawler: Displaying word cloud.', 'background-color: lightblue;');
     const wordCloudDiv = document.createElement('div');
     wordCloudDiv.id = 'wordCloud';
-    wordCloudDiv.style.width = '70vw'; // Use 80% of viewport width
-    wordCloudDiv.style.height = '35vw'; // Reduce height for a more compact display
+    wordCloudDiv.style.width = '65vw'; // Use 80% of viewport width
+    wordCloudDiv.style.height = '30vw'; // Reduce height for a more compact display
     wordCloudDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
     wordCloudDiv.style.position = 'relative';
-    wordCloudDiv.style.margin = '10px auto'; // Center align the div with margin to prevent overlap
+    wordCloudDiv.style.margin = '-1px auto'; // Center align the div with margin to prevent overlap
 
     // Adjust positioning to prevent overlap with recommendations
     wordCloudDiv.style.zIndex = '1000';
@@ -113,7 +113,7 @@ const Comments = (() => {
       list: wordFreq,
       gridSize: Math.round(10 * (window.innerWidth / 1024)), // Adjusted gridSize for compactness
       weightFactor: function (size) {
-        return (size / maxCount) * 80; // Adjust weightFactor for compactness
+        return (size / maxCount) * 95; // Adjust weightFactor for compactness
       },
       fontFamily: 'Arial',
       color: 'random-dark',
@@ -129,6 +129,32 @@ const Comments = (() => {
       console.error('WordCloud function is not available.');
     }
   };
+
+    const displayTopics = topics => {
+        const topicsDiv = document.createElement('div');
+        topicsDiv.id = 'topics';
+        topicsDiv.style.width = '80vw'; // Use 80% of viewport width
+        topicsDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        topicsDiv.style.margin = '20px auto'; // Center align the div with margin to prevent overlap
+        topicsDiv.style.padding = '20px';
+        topicsDiv.style.border = '1px solid #ccc';
+        topicsDiv.style.borderRadius = '8px';
+    
+        topics.forEach((topic, index) => {
+          const topicDiv = document.createElement('div');
+          topicDiv.style.marginBottom = '10px';
+          topicDiv.innerHTML = `<strong>Topic ${index + 1}:</strong> ${topic.join(', ')}`;
+          topicsDiv.appendChild(topicDiv);
+        });
+    
+        const commentsSection = document.querySelector('ytd-comments');
+        if (commentsSection) {
+          commentsSection.parentNode.insertBefore(topicsDiv, commentsSection);
+        } else {
+          document.body.appendChild(topicsDiv);
+        }
+      };
+
 
   return { extractComments, generateWordFrequency, displayWordCloud };
 })();
@@ -176,6 +202,25 @@ const UI = (() => {
 
 // Main Function
 const Main = (() => {
+    let currentVideoId = Utils.getVideoId();
+
+    const clearWordCloud = () => {
+      const wordCloudDiv = document.getElementById('wordCloud');
+      if (wordCloudDiv) {
+        wordCloudDiv.remove();
+      }
+    };
+  
+    const monitorVideoChange = () => {
+      setInterval(() => {
+        const newVideoId = Utils.getVideoId();
+        if (newVideoId && newVideoId !== currentVideoId) {
+          currentVideoId = newVideoId;
+          clearWordCloud();
+        }
+      }, 1000); // Check every second for video change
+    };
+  
   const handleButtonClick = async button => {
     console.log('%c🧑‍💻 YT Comments Crawler: Button clicked.', 'background-color: lightblue;');
     const videoId = Utils.getVideoId();
@@ -186,11 +231,13 @@ const Main = (() => {
     button.innerText = '⏳';
     button.title = 'Crawling...';
 
-    await Utils.scrollToBottom(50, 2); // Dynamic scroll based on desired comments and max scrolls
+    await Utils.scrollToBottom(50, 4); // Dynamic scroll based on desired comments and max scrolls
     const comments = Comments.extractComments();
     const wordFreq = Comments.generateWordFrequency(comments);
     Comments.displayWordCloud(wordFreq);
-
+     const topics = Comments.extractTopics(comments);
+    console.log(topics);
+    
     button.innerText = 'Retry 🔃';
     button.title = 'Crawl again';
   };
@@ -199,6 +246,8 @@ const Main = (() => {
     const button = UI.createButton();
     UI.addFullscreenListeners(button);
     button.addEventListener('click', () => handleButtonClick(button));
+    monitorVideoChange(); // Start monitoring video changes
+
   };
 
   return { init };
