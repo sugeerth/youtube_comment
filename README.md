@@ -1,8 +1,9 @@
-# YouTube Comment Ingester Chrome Extension
+# YouTube Comment WordCloud Chrome Extension
 
 ## Overview
 
-The YouTube Comment Ingester is a simple Chrome extension that automates the process of navigating to a YouTube video and extracting and visualizing the most important keywords in the comments. This extension is useful for researchers, data scientists, and anyone interested in analyzing YouTube comments.
+The YouTube Comment Ingester is a simple Chrome extension that visualizes the most important keywords in the comments. 
+This is done through a YouTube Comment WordCloud. This extension is useful for researchers, data scientists, and anyone interested in analyzing YouTube comments.
 
 ## Features
 
